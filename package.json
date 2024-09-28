@@ -17,9 +17,17 @@
     "@nestjs/common": "^10.3.8",
     "@nestjs/core": "^10.3.8",
     "@nestjs/microservices": "^10.3.8",
+    "@nestjs/typeorm": "^9.0.1",
+    "element-plus": "^2.8.3",
+    "fs-extra": "^11.2.0",
+    "moment": "^2.30.1",
+    "pinia": "^2.2.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "vue": "^3.4.27"
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.15",
+    "vue": "^3.4.27",
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@lightwing/eslint-config": "^1.0.52",
@@ -32,8 +40,11 @@
     "rimraf": "6.0.1",
     "simple-git-hooks": "2.11.1",
     "typescript": "5.6.2",
+    "unplugin-auto-import": "^0.18.3",
+    "unplugin-vue-components": "^0.27.4",
     "vite": "5.4.7",
     "vite-plugin-doubleshot": "0.0.17",
+    "vite-plugin-eslint": "^1.8.1",
     "vue-tsc": "2.1.6"
   },
   "simple-git-hooks": {

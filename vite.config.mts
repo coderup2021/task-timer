@@ -2,11 +2,22 @@ import { join } from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePluginDoubleshot } from 'vite-plugin-doubleshot'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import eslintPlugin from 'vite-plugin-eslint'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   root: join(__dirname, 'src/render'),
   plugins: [
+    eslintPlugin({
+      // 插件选项
+      include: ['src/**/*.js', 'src/**/*.ts'],
+      exclude: ['node_modules/**'],
+      cache: true,
+      fix: true,
+    }),
     vue(),
     VitePluginDoubleshot({
       type: 'electron',
@@ -24,11 +35,18 @@ export default defineConfig({
         },
       },
     }),
+    AutoImport({
+      resolvers: [ElementPlusResolver()],
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()],
+    }),
   ],
   resolve: {
     alias: {
       '@render': join(__dirname, 'src/render'),
       '@main': join(__dirname, 'src/main'),
+      '@types': join(__dirname, 'src/types'),
     },
   },
   base: './',

@@ -1,10 +1,11 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" class="logo">
-  <HelloWorld title="Vite + Electron & Esbuild" />
+  <!-- <nav>
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/task">task</RouterLink>
+  </nav> -->
+  <RouterView />
 </template>
 
 <style>
@@ -14,7 +15,6 @@ import HelloWorld from './components/HelloWorld.vue'
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 .logo {
   width: 400px;

@@ -8,16 +8,22 @@ const props = defineProps({
   },
 })
 
-const { sendMsg: sendMsgToMainProcess, onReplyMsg } = window.electron
+const { createTask, onReplyMsg } = window.electron
 
 const log = ref('')
 const msg = ref('')
 
 async function sendMsg() {
   try {
-    log.value += `[render]: ${msg.value} \n`
-    const data = await sendMsgToMainProcess(msg.value)
-    log.value += `[main]: ${data}  \n`
+    // log.value += `[render]: ${msg.value} \n`;
+    // // log.value = JSON.stringify({ hello: "lj" });
+    // const data = await sendMsgToMainProcess(log.value);
+    // // const data = await sendMsgToMainProcess(
+    // //   "[render]: " + JSON.stringify({ hello: "lj" }),
+    // // );
+    // console.log("recieve data");
+    // log.value += `[main]: ${data}  \n`;
+    await createTask({ hello: 'task' })
   }
   catch (error) {
     console.error(error)
@@ -41,6 +47,4 @@ onReplyMsg((msg: string) => {
   </div>
 </template>
 
-<style>
-
-</style>
+<style></style>

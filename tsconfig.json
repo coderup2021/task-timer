@@ -2,28 +2,18 @@
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "preserve",
-    "lib": [
-      "esnext",
-      "dom"
-    ],
+    "lib": ["esnext", "dom"],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
-    "module": "ESNext",
     "moduleResolution": "node",
     "paths": {
-      "@render/*": [
-        "src/render/*"
-      ],
-      "@main/*": [
-        "src/main/*"
-      ]
+      "@render/*": ["src/render/*"],
+      "@main/*": ["src/main/*"],
+      "@types/*": ["src/types/*"]
     },
     "resolveJsonModule": true,
-    "types": [
-      "vite/client",
-      "./src/preload"
-    ],
+    "types": ["vite/client", "./src/preload"],
     "strict": false,
     "noImplicitAny": false,
     "noEmit": true,
@@ -35,6 +25,7 @@
     "src/**/*.ts",
     "src/**/*.d.ts",
     "src/**/*.tsx",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "shims-vue.d.ts"
   ]
 }
