@@ -5,11 +5,12 @@ import { TimerCoreService } from './timer-core.service'
   imports: [],
   controllers: [],
   providers: [TimerCoreService],
+  exports: [TimerCoreService],
 })
 export class TimerCoreModule {
   constructor(private readonly timerCoreService: TimerCoreService) {}
   onModuleInit() {
     console.log('timerCoreService onModuleInit')
-    // this.timerCoreService.run();
+    this.timerCoreService.run()
   }
 }

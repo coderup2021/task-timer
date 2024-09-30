@@ -4,8 +4,9 @@ import { onMounted, ref } from 'vue'
 import { useTimerTaskStore } from './timer-task.store'
 import TimerTaskForm from './TimerTaskForm.vue'
 
-const { deleteTask, onAudioPlay } = window.electron
+const { deleteTask, onAudioPlay, getNextSrc, onAudioStop } = window.electron
 const showForm = ref(false)
+const currPlayFilename = ref('')
 
 const deleteVisible = ref(false)
 const timerTaskStore = useTimerTaskStore()
@@ -36,13 +37,20 @@ function onEdit(record: ITask) {
 const audio = ref<HTMLAudioElement>(null)
 
 onAudioPlay((props: IAudioPlayProps) => {
-  console.log('audio play src===', props.src)
+  console.log('audio play event triggered,', props)
+  currPlayFilename.value = props.src
   audio.value.src = `http://127.0.0.1:3678${props.src}`
   audio.value.play()
 })
 
-function onPlayEnded() {
-  console.log('audio play ended')
+onAudioStop(() => {
+  console.log('audio stop event triggered')
+  currPlayFilename.value = ''
+  audio.value.pause()
+})
+
+async function onPlayEnded() {
+  await getNextSrc()
 }
 </script>
 
@@ -66,7 +74,7 @@ function onPlayEnded() {
       />
       <div class="audio-playing-info">
         <span> 当前播放: </span>
-        <span> 无 </span>
+        <span> {{ currPlayFilename.substring(1) }} </span>
       </div>
     </el-space>
   </el-row>

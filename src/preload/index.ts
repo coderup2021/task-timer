@@ -52,8 +52,20 @@ contextBridge.exposeInMainWorld('electron', {
     return ipcRenderer.invoke(eventName, { ids })
   },
 
+  // 获取下一首需要播放的音频
+  getNextSrc: () => {
+    const eventName = 'task/getNextSrc'
+    return ipcRenderer.invoke(eventName)
+  },
+
+  // 定时规则开始时间到时，触发
   onAudioPlay: (cb: (data: IAudioPlayProps) => any) =>
     ipcRenderer.on('audio-play', (e, data) => {
       cb(data)
     }),
+
+  // 定时规则结束时间到时，触发
+  onAudioStop: (cb: () => any) => {
+    ipcRenderer.on('audio-stop', cb)
+  },
 })

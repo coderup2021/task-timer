@@ -60,6 +60,7 @@ export class TimerCoreService {
   dbFilePath = path.resolve(this.dbFileDir, this.dbFileName)
   configs: TimerTaskRule[] = []
   runningRule: TimerTaskRule | null = null
+  runningRuleId: number
   nextStartTime?: NodeJS.Timeout
   nextStopTime?: NodeJS.Timeout
 
@@ -135,24 +136,43 @@ export class TimerCoreService {
     return playIndex
   }
 
+  genSymlink(filepath: string) {
+    // const filepath = rule.files[rule.playIndex];
+    const filename = path.basename(filepath)
+    const linkPath = path.resolve(this.staticDirPath, filename)
+    try {
+      if (fs.existsSync(linkPath)) {
+        fs.unlinkSync(linkPath)
+      }
+      fs.symlinkSync(filepath, linkPath)
+      return true
+    }
+    catch (error) {
+      console.log('genSymlink error', error)
+      this.eventEmitter.emit('error', { error })
+      return false
+    }
+  }
+
   runRule(rule: TimerTaskRule) {
     this.runningRule = rule
+    this.runningRuleId = rule.id
     rule.status = 'doing'
     rule.playIndex = this.genNewPlayIndex(rule)
     console.log('new rule playIndex', rule.files[rule.playIndex])
-    const src = rule.files[rule.playIndex]
-    const filename = path.basename(src)
-    const linkPath = path.resolve(this.staticDirPath, filename)
-    try {
-      fs.unlinkSync(linkPath)
-      fs.symlinkSync(src, linkPath)
+    const filepath = rule.files[rule.playIndex]
+    const filename = path.basename(filepath)
+    if (this.genSymlink(filepath)) {
       this.eventEmitter.emit('audio-play', {
         src: `/${filename}`,
-        origin: src,
+        filepath,
       })
     }
-    catch (error) {
-      this.eventEmitter.emit('error', { error })
+    else {
+      this.eventEmitter.emit('audio-play', {
+        src: ``,
+        filepath,
+      })
     }
     // TODO:
     // this.window.webContents.send("play", {
@@ -164,17 +184,41 @@ export class TimerCoreService {
     this.startNextTimer()
   }
 
+  @OnEvent('timer-task:getNextSrc')
   getNextSrc() {
+    console.log('this.runningRuleId', this.runningRuleId)
     const rule = this.runningRule
     if (!rule) {
-      console.error('no running rule')
+      console.error('no running rule when getNextSrc')
       return
     }
     rule.playIndex = this.genNewPlayIndex(rule)
-    console.log('next rule playIndex', rule.playIndex)
-    const src = rule.files[rule.playIndex]
-    return {
-      src,
+    const filepath = rule.files[rule.playIndex]
+    const filename = path.basename(filepath)
+
+    // if (this.genSymlink(filepath)) {
+    //   return {
+    //     src: `/${filename}`,
+    //     filepath,
+    //   };
+    // } else {
+    //   return {
+    //     src: ``,
+    //     filepath,
+    //   };
+    // }
+    if (this.genSymlink(filepath)) {
+      console.log('next src', `/${filename}`)
+      this.eventEmitter.emit('timer-task:nextSrc', {
+        src: `/${filename}`,
+        filepath,
+      })
+    }
+    else {
+      this.eventEmitter.emit('timer-task:nextSrc', {
+        src: ``,
+        filepath,
+      })
     }
   }
 

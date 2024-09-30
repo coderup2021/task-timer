@@ -1,4 +1,4 @@
-import type { ITask } from 'src/types/task.type'
+import type { IAudioPlayProps, ITask } from 'src/types/task.type'
 
 declare global {
   interface Window {
@@ -13,6 +13,8 @@ declare global {
       modifyTask: (task: IModifyTask) => Promise<{ id: string }>
       deleteTask: (ids: number[]) => Promise<{ id: string }>
       onAudioPlay: (cb: (data: IAudioPlayProps) => any) => void
+      onAudioStop: (cb: () => any) => void
+      getNextSrc: () => Promise<IAudioPlayProps>
     }
   }
 }

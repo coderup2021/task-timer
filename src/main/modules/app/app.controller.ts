@@ -5,6 +5,7 @@ import { of } from 'rxjs'
 import type { BrowserWindow } from 'electron'
 import { dialog } from 'electron'
 import { OnEvent } from '@nestjs/event-emitter'
+import type { IAudioPlayProps } from 'src/types/task.type'
 import { AppService } from './app.service'
 
 @Controller()
@@ -32,10 +33,15 @@ export class AppController {
   }
 
   @OnEvent('audio-play')
-  public async onAudioPlay({ src }) {
+  public async onAudioPlay(data: IAudioPlayProps) {
     const { webContents } = this.mainWin
-    webContents.send('audio-play', { src })
-    console.log('audio-play')
+    webContents.send('audio-play', data)
+  }
+
+  @OnEvent('timer-task:nextSrc')
+  public async onNextSrc(data: IAudioPlayProps) {
+    const { webContents } = this.mainWin
+    webContents.send('audio-play', data)
   }
 
   @OnEvent('audio-stop')

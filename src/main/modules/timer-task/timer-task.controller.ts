@@ -4,6 +4,7 @@ import { BrowserWindow } from 'electron'
 import { Payload } from '@nestjs/microservices'
 import { Observable, of } from 'rxjs'
 import { EventEmitter2 } from '@nestjs/event-emitter'
+import { TimerCoreService } from '../timer-core/timer-core.service'
 import { TimerTaskService } from './timer-task.service'
 import { CreateTaskDto, ModifyTaskDto } from './timer-task.dto'
 
@@ -13,6 +14,7 @@ export class TimerTaskController {
     @Window() private readonly mainWin: BrowserWindow,
     private readonly timerTaskService: TimerTaskService,
     private readonly eventEmitter: EventEmitter2,
+    private readonly timerCoreService: TimerCoreService,
   ) {}
 
   @IpcHandle('create')
@@ -52,6 +54,11 @@ export class TimerTaskController {
     const res = this.timerTaskService.delete(ids)
     this.emitUpdateEvent()
     return of(res)
+  }
+
+  @IpcHandle('getNextSrc')
+  public getNextSrc() {
+    this.eventEmitter.emit('timer-task:getNextSrc')
   }
 
   public emitUpdateEvent() {

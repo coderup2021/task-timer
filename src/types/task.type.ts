@@ -5,5 +5,5 @@ export type ICreateTask = Omit<RemoveId<RemoveDate<TimerTask>>, 'runCount'>
 export type IModifyTask = Omit<Partial<RemoveDate<TimerTask>>, 'runCount'>
 export interface IAudioPlayProps {
   src: string
-  filePath: string
+  filepath: string
 }
