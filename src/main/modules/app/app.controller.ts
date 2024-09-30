@@ -4,6 +4,7 @@ import { Payload } from '@nestjs/microservices'
 import { of } from 'rxjs'
 import type { BrowserWindow } from 'electron'
 import { dialog } from 'electron'
+import { OnEvent } from '@nestjs/event-emitter'
 import { AppService } from './app.service'
 
 @Controller()
@@ -28,5 +29,19 @@ export class AppController {
       properties: ['openFile', 'multiSelections'],
       filters: [{ name: 'file', extensions: [] }],
     })
+  }
+
+  @OnEvent('audio-play')
+  public async onAudioPlay({ src }) {
+    const { webContents } = this.mainWin
+    webContents.send('audio-play', { src })
+    console.log('audio-play')
+  }
+
+  @OnEvent('audio-stop')
+  public async onAudioStop() {
+    const { webContents } = this.mainWin
+    webContents.send('audio-stop')
+    console.log('audio-stop')
   }
 }

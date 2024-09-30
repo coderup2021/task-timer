@@ -7,7 +7,7 @@ import { CreateTaskDto, ModifyTaskDto } from './timer-task.dto'
 
 @Injectable()
 export class TimerTaskService {
-  dbFileDir = path.resolve(os.homedir(), '.task-timer')
+  dbFileDir = path.resolve(os.homedir(), './.task-timer')
   dbFileName = 'task-timer.json'
   dbFilePath = path.resolve(this.dbFileDir, this.dbFileName)
   maxId = 0

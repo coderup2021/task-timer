@@ -1,4 +1,9 @@
-import type { ICreateTask, IModifyTask, ITask } from 'src/types/task.type'
+import type {
+  IAudioPlayProps,
+  ICreateTask,
+  IModifyTask,
+  ITask,
+} from 'src/types/task.type'
 import electron, { contextBridge, dialog, ipcRenderer } from 'electron'
 
 console.log('🚀 ~ 111111111dialog:', dialog, electron)
@@ -46,4 +51,9 @@ contextBridge.exposeInMainWorld('electron', {
     const eventName = 'task/delete'
     return ipcRenderer.invoke(eventName, { ids })
   },
+
+  onAudioPlay: (cb: (data: IAudioPlayProps) => any) =>
+    ipcRenderer.on('audio-play', (e, data) => {
+      cb(data)
+    }),
 })

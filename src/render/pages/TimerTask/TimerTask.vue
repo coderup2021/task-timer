@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { ITask } from 'src/types/task.type'
+import type { IAudioPlayProps, ITask } from 'src/types/task.type'
 import { onMounted, ref } from 'vue'
 import { useTimerTaskStore } from './timer-task.store'
 import TimerTaskForm from './TimerTaskForm.vue'
 
-const { deleteTask } = window.electron
+const { deleteTask, onAudioPlay } = window.electron
 const showForm = ref(false)
 
 const deleteVisible = ref(false)
@@ -24,7 +24,6 @@ const weekDayMap = {
 }
 
 async function onDelete(id: number) {
-  console.log('id', id)
   deleteVisible.value = false
   await deleteTask([id])
   ElMessage.success('删除成功')
@@ -32,6 +31,18 @@ async function onDelete(id: number) {
 }
 function onEdit(record: ITask) {
   console.log(record)
+}
+
+const audio = ref<HTMLAudioElement>(null)
+
+onAudioPlay((props: IAudioPlayProps) => {
+  console.log('audio play src===', props.src)
+  audio.value.src = `http://127.0.0.1:3678${props.src}`
+  audio.value.play()
+})
+
+function onPlayEnded() {
+  console.log('audio play ended')
 }
 </script>
 
@@ -41,11 +52,22 @@ function onEdit(record: ITask) {
       <h2>定时任务:</h2>
       <el-button
         type="primary"
-        style="margin-left: 20px"
+        style="margin: 0 40px 0 20px"
         @click="setShowForm(true)"
       >
         添加
       </el-button>
+      <audio
+        ref="audio"
+        controls
+        src="file://Users/lj/upload_test/pudinha.mp3"
+        autoPlay
+        :onEnded="onPlayEnded"
+      />
+      <div class="audio-playing-info">
+        <span> 当前播放: </span>
+        <span> 无 </span>
+      </div>
     </el-space>
   </el-row>
   <el-table :data="timerTaskStore.data" style="width: 90%" border>
@@ -99,7 +121,6 @@ function onEdit(record: ITask) {
               </el-button>
             </div>
             <template #reference>
-              <!-- <el-button @click="onDelete(scope.row.id)">删除</el-button> -->
               <el-button @click="deleteVisible = true">
                 删除
               </el-button>
@@ -135,5 +156,10 @@ function onEdit(record: ITask) {
   list-style: none;
   word-break: keep-all;
   white-space: nowrap;
+}
+.audio-playing-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 </style>

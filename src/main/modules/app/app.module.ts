@@ -2,7 +2,9 @@ import { join } from 'node:path'
 import { Module } from '@nestjs/common'
 import { ElectronModule } from '@doubleshot/nest-electron'
 import { BrowserWindow, app } from 'electron'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { TimerTaskModule } from '../timer-task/timer-task.module'
+import { TimerCoreModule } from '../timer-core/timer-core.module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 
@@ -38,7 +40,9 @@ app.disableHardwareAcceleration()
         return { win }
       },
     }),
+    EventEmitterModule.forRoot(),
     TimerTaskModule,
+    TimerCoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

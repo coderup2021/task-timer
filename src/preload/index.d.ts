@@ -12,6 +12,7 @@ declare global {
       createTask: (task: ICreateTask) => Promise<{ id: string }>
       modifyTask: (task: IModifyTask) => Promise<{ id: string }>
       deleteTask: (ids: number[]) => Promise<{ id: string }>
+      onAudioPlay: (cb: (data: IAudioPlayProps) => any) => void
     }
   }
 }
