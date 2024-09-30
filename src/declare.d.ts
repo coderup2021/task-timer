@@ -11,3 +11,5 @@ declare interface ResList<T> {
   list: T
   count: number
 }
+
+declare type FormMode = 'add' | 'edit' | 'view' | 'none'

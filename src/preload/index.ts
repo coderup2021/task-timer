@@ -4,9 +4,7 @@ import type {
   IModifyTask,
   ITask,
 } from 'src/types/task.type'
-import electron, { contextBridge, dialog, ipcRenderer } from 'electron'
-
-console.log('🚀 ~ 111111111dialog:', dialog, electron)
+import { contextBridge, ipcRenderer } from 'electron'
 
 contextBridge.exposeInMainWorld('electron', {
   sendMsg: (msg: string): Promise<string> => ipcRenderer.invoke('msg', msg),

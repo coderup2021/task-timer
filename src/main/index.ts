@@ -31,6 +31,10 @@ async function electronAppInit() {
       })
     }
   }
+  app.setLoginItemSettings({
+    openAtLogin: true,
+    openAsHidden: false, // 设置为 true 可以隐藏启动时的窗口
+  })
 
   await app.whenReady()
 }

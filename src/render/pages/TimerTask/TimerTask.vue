@@ -5,14 +5,18 @@ import { useTimerTaskStore } from './timer-task.store'
 import TimerTaskForm from './TimerTaskForm.vue'
 
 const { deleteTask, onAudioPlay, getNextSrc, onAudioStop } = window.electron
-const showForm = ref(false)
+const formMode = ref<FormMode>('none')
 const currPlayFilename = ref('')
+const showForm = ref(false)
 
 const deleteVisible = ref(false)
 const timerTaskStore = useTimerTaskStore()
+const oldRecord = ref<ITask | null>()
 onMounted(timerTaskStore.fetchRemote)
-function setShowForm(val: boolean) {
-  showForm.value = val
+
+function setFormMode(val: FormMode) {
+  formMode.value = val
+  showForm.value = formMode.value !== 'none'
 }
 const weekDayMap = {
   1: '周一',
@@ -30,8 +34,23 @@ async function onDelete(id: number) {
   ElMessage.success('删除成功')
   await timerTaskStore.fetchRemote()
 }
-function onEdit(record: ITask) {
+
+function onDetail(record: ITask) {
+  setFormMode('view')
+  showForm.value = true
+  oldRecord.value = record
   console.log(record)
+}
+
+function onEdit() {
+  setFormMode('edit')
+  showForm.value = true
+}
+
+function onAdd() {
+  setFormMode('add')
+  showForm.value = true
+  oldRecord.value = null
 }
 
 const audio = ref<HTMLAudioElement>(null)
@@ -58,11 +77,7 @@ async function onPlayEnded() {
   <el-row>
     <el-space>
       <h2>定时任务:</h2>
-      <el-button
-        type="primary"
-        style="margin: 0 40px 0 20px"
-        @click="setShowForm(true)"
-      >
+      <el-button type="primary" style="margin: 0 40px 0 20px" @click="onAdd">
         添加
       </el-button>
       <audio
@@ -99,7 +114,7 @@ async function onPlayEnded() {
       </template>
     </el-table-column>
 
-    <el-table-column prop="files" label="文件名">
+    <!-- <el-table-column prop="files" label="文件名">
       <template #default="scope">
         <ul v-if="scope.row.files.length > 0" class="table-file-list">
           <li v-for="(item, index) in scope.row.files" :key="item">
@@ -107,14 +122,14 @@ async function onPlayEnded() {
           </li>
         </ul>
       </template>
-    </el-table-column>
+    </el-table-column> -->
     <el-table-column label="操作">
       <template #default="scope">
         <el-space>
-          <el-button @click="onEdit(scope.row)">
-            编辑
+          <el-button @click="onDetail(scope.row)">
+            详情
           </el-button>
-          <el-popover :visible="deleteVisible" placement="top" :width="160">
+          <el-popover :visible="deleteVisible" placement="top" :width="180">
             <p>确认删除吗?</p>
             <div style="text-align: right; margin: 0">
               <el-button size="small" text @click="deleteVisible = false">
@@ -138,9 +153,25 @@ async function onPlayEnded() {
       </template>
     </el-table-column>
   </el-table>
-  <el-drawer v-model="showForm" direction="rtl" size="800" title="添加规则">
+  <el-drawer
+    v-model="showForm"
+    direction="rtl"
+    size="800"
+    :title="
+      formMode === 'view'
+        ? '规则详情'
+        : formMode === 'edit'
+          ? '编辑规则'
+          : '添加规则'
+    "
+  >
     <template #default>
-      <TimerTaskForm @on-cancel="setShowForm(false)" />
+      <TimerTaskForm
+        :form-mode="formMode"
+        :record="oldRecord"
+        @on-cancel="setFormMode('none')"
+        @on-edit="onEdit"
+      />
     </template>
   </el-drawer>
 </template>

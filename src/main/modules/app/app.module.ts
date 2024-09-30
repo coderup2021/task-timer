@@ -35,7 +35,9 @@ app.disableHardwareAcceleration()
           : `file://${join(app.getAppPath(), 'dist/render/index.html')}`
 
         win.loadURL(URL)
-        win.webContents.openDevTools()
+        if (isDev) {
+          win.webContents.openDevTools()
+        }
 
         return { win }
       },
