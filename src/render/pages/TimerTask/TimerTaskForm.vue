@@ -186,25 +186,25 @@ function deleteFile(item: string) {
     </el-form-item>
     <el-form-item label="重复">
       <el-checkbox-group v-model="form.repeat">
-        <el-checkbox value="1" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="1" name="repeat" :disabled="formMode === 'view'">
           周一
         </el-checkbox>
-        <el-checkbox value="2" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="2" name="repeat" :disabled="formMode === 'view'">
           周二
         </el-checkbox>
-        <el-checkbox value="3" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="3" name="repeat" :disabled="formMode === 'view'">
           周三
         </el-checkbox>
-        <el-checkbox value="4" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="4" name="repeat" :disabled="formMode === 'view'">
           周四
         </el-checkbox>
-        <el-checkbox value="5" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="5" name="repeat" :disabled="formMode === 'view'">
           周五
         </el-checkbox>
-        <el-checkbox value="6" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="6" name="repeat" :disabled="formMode === 'view'">
           周六
         </el-checkbox>
-        <el-checkbox value="7" name="repeat" :disabled="formMode === 'view'">
+        <el-checkbox :value="7" name="repeat" :disabled="formMode === 'view'">
           周日
         </el-checkbox>
       </el-checkbox-group>

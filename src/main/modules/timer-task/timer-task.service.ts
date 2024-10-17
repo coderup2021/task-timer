@@ -51,7 +51,7 @@ export class TimerTaskService {
     task.type = dto.type
     task.startAt = dto.startAt
     task.endAt = dto.endAt
-    task.repeat = dto.repeat
+    task.repeat = dto.repeat.map(Number) as WeekDay[]
     task.files = dto.files
     task.id = this.genId()
 

@@ -103,6 +103,13 @@ export class TimerCoreService {
 
   getNextPlan(configs: TimerTask[], now: Moment) {
     const tmpConfigs: (TimerTask & { startAtTimestamp: number })[] = configs
+      .filter(
+        config =>
+          config.startAt
+          && config.endAt
+          && config.repeat.length > 0
+          && config.files.length > 0,
+      )
       .map((config) => {
         return {
           ...config,
@@ -112,7 +119,7 @@ export class TimerCoreService {
       .sort((a, b) => a.startAtTimestamp - b.startAtTimestamp)
       .filter(
         config =>
-          config.repeat.includes(now.day() as WeekDay) === false
+          config.repeat.includes(now.day() as WeekDay)
           && isAfterTime(moment(config.startAt, dateFormat), now), // 找到开始时间比当前时间晚的
       )
     if (tmpConfigs[0]) {

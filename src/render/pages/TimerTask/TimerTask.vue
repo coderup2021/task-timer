@@ -10,6 +10,7 @@ const currPlayFilename = ref('')
 const showForm = ref(false)
 
 const deleteVisible = ref(false)
+const deleteID = ref<number>(-1)
 const timerTaskStore = useTimerTaskStore()
 const oldRecord = ref<ITask | null>()
 onMounted(timerTaskStore.fetchRemote)
@@ -28,8 +29,14 @@ const weekDayMap = {
   0: '周日',
 }
 
+function showDeleteConfirm(id: number) {
+  deleteVisible.value = true
+  deleteID.value = id
+}
+
 async function onDelete(id: number) {
   deleteVisible.value = false
+  deleteID.value = -1
   await deleteTask([id])
   ElMessage.success('删除成功')
   await timerTaskStore.fetchRemote()
@@ -129,7 +136,11 @@ async function onPlayEnded() {
           <el-button @click="onDetail(scope.row)">
             详情
           </el-button>
-          <el-popover :visible="deleteVisible" placement="top" :width="180">
+          <el-popover
+            :visible="deleteVisible && deleteID === scope.row.id"
+            placement="top"
+            :width="180"
+          >
             <p>确认删除吗?</p>
             <div style="text-align: right; margin: 0">
               <el-button size="small" text @click="deleteVisible = false">
@@ -144,7 +155,7 @@ async function onPlayEnded() {
               </el-button>
             </div>
             <template #reference>
-              <el-button @click="deleteVisible = true">
+              <el-button @click="showDeleteConfirm(scope.row.id)">
                 删除
               </el-button>
             </template>

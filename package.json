@@ -1,8 +1,8 @@
 {
-  "name": "fast-vite-nestjs-electron",
-  "version": "0.0.1",
+  "name": "timer-task",
+  "version": "1.0.0",
   "packageManager": "pnpm@9.11.0",
-  "description": "Vite + Electron with Doubleshot, so fast! ⚡",
+  "description": "Run tasks at specified times",
   "main": "dist/main/index.js",
   "scripts": {
     "dev": "rimraf dist && vite",
