@@ -1,6 +1,6 @@
 {
   "name": "timer-task",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@9.11.0",
   "description": "Run tasks at specified times",
   "main": "dist/main/index.js",
