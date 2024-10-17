@@ -2,6 +2,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { Injectable } from '@nestjs/common'
 import fse from 'fs-extra'
+import { TimerCoreService } from '../timer-core/timer-core.service'
 import { TimerTask } from './timer-task.entity'
 import { CreateTaskDto, ModifyTaskDto } from './timer-task.dto'
 
@@ -12,7 +13,7 @@ export class TimerTaskService {
   dbFilePath = path.resolve(this.dbFileDir, this.dbFileName)
   maxId = 0
   tasks: TimerTask[] = []
-  constructor() {
+  constructor(private readonly timerCoreService: TimerCoreService) {
     this.ensureJsonDBFile()
     this.tasks = fse.readJsonSync(this.dbFilePath)
     this.maxId = this.getMaxId()
@@ -92,7 +93,8 @@ export class TimerTaskService {
   async getList() {
     const list = this.tasks
     const count = this.tasks.length
-    return { list, count }
+    const runningId = this.timerCoreService.getRuningRuleId()
+    return { list, count, runningId }
   }
 
   async get(id: number) {

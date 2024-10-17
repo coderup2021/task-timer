@@ -64,9 +64,10 @@ const audio = ref<HTMLAudioElement>(null)
 
 onAudioPlay((props: IAudioPlayProps) => {
   console.log('audio play event triggered,', props)
+  timerTaskStore.fetchRemote()
   currPlayFilename.value = props.src
   audio.value.src = `http://127.0.0.1:3678${props.src}`
-  audio.value.play()
+  //   audio.value.play()
 })
 
 onAudioStop(() => {
@@ -78,6 +79,8 @@ onAudioStop(() => {
 async function onPlayEnded() {
   await getNextSrc()
 }
+
+console.log('timerTaskStore.runningId', timerTaskStore.runningId)
 </script>
 
 <template>
@@ -101,6 +104,16 @@ async function onPlayEnded() {
     </el-space>
   </el-row>
   <el-table :data="timerTaskStore.data" style="width: 90%" border>
+    <el-table-column width="60" prop="status" label="状态">
+      <template #default="scope">
+        <span v-if="scope.row.id === timerTaskStore.runningId">
+          <el-icon color="#1890ff" size="24"><VideoPlay /></el-icon>
+        </span>
+        <span v-else>
+          <el-icon size="24"><VideoPause /></el-icon>
+        </span>
+      </template>
+    </el-table-column>
     <el-table-column prop="name" label="规则名" />
     <el-table-column prop="desc" label="描述" />
     <el-table-column prop="startAt" label="开始时间" />

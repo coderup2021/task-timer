@@ -299,4 +299,8 @@ export class TimerCoreService {
     this.initConfig()
     this.run()
   }
+
+  getRuningRuleId() {
+    return this.runningRuleId
+  }
 }

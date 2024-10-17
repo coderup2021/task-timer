@@ -7,7 +7,7 @@ declare global {
       onReplyMsg: (cb: (msg: string) => any) => void
 
       selectFiles: () => Promise<Electron.OpenDialogReturnValue>
-      getTaskList: () => Promise<ResList<ITask[]>>
+      getTaskList: () => Promise<ResList<ITask[]> & { runningId: number }>
       getTaskDetail: () => Promise<ResList<ITask>>
       createTask: (task: ICreateTask) => Promise<{ id: string }>
       modifyTask: (task: IModifyTask) => Promise<{ id: string }>
