@@ -3,6 +3,7 @@ import type { ICreateTask } from 'src/types/task.type'
 import type { FormInstance, FormRules } from 'element-plus'
 import moment from 'moment'
 import { onMounted, reactive, ref, watch } from 'vue'
+import { clone } from 'es-toolkit'
 import { useTimerTaskStore } from './timer-task.store'
 import { formatTime } from './utils'
 
@@ -61,7 +62,10 @@ function initForm(formMode: FormMode) {
     form.type = record.type
     form.startAt = new Date(`2024-12-12 ${record.startAt}`)
     form.endAt = new Date(`2024-12-12 ${record.endAt}`)
-    form.options = record.options
+    form.options = clone(record.options)
+    if (form.options.playInterval) {
+      form.options.playInterval = Number(record.options.playInterval) / 1000
+    }
     form.repeat = record.repeat
     form.files = record.files
   }
@@ -93,10 +97,22 @@ async function onSubmit(formEl: FormInstance | undefined) {
     if (!valid) {
       return
     }
-    let { name, desc, type, startAt, endAt, repeat, files, id } = JSON.parse(
-      JSON.stringify(form),
-    )
-    console.log({ name, desc, type, startAt, endAt, repeat, files, id })
+    let { name, desc, type, startAt, endAt, repeat, files, id, options }
+      = JSON.parse(JSON.stringify(form))
+    options.playInterval = options.playInterval * 1000
+
+    console.log({
+      name,
+      desc,
+      type,
+      startAt,
+      endAt,
+      repeat,
+      files,
+      id,
+      options,
+    })
+
     if (moment(startAt).isAfter(moment(endAt))) {
       ElMessage({
         message: '开始时间不能晚于结束时间',
@@ -108,10 +124,29 @@ async function onSubmit(formEl: FormInstance | undefined) {
     startAt = formatTime(startAt)
     endAt = formatTime(endAt)
     if (id) {
-      await modifyTask({ name, desc, type, startAt, endAt, repeat, files, id })
+      await modifyTask({
+        name,
+        desc,
+        type,
+        startAt,
+        endAt,
+        repeat,
+        files,
+        id,
+        options,
+      })
     }
     else {
-      await createTask({ name, desc, type, startAt, endAt, repeat, files })
+      await createTask({
+        name,
+        desc,
+        type,
+        startAt,
+        endAt,
+        repeat,
+        files,
+        options,
+      })
     }
     timerTaskStore.fetchRemote()
     emit('onCancel')
@@ -158,6 +193,38 @@ function deleteFile(item: string) {
     </el-form-item>
     <el-form-item label="类型">
       <el-input v-model="form.type" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="播放方式">
+      <el-radio-group v-model="form.options.playType">
+        <el-radio
+          value="asc"
+          name="form.options.playType"
+          :disabled="formMode === 'view'"
+        >
+          升序
+        </el-radio>
+        <el-radio
+          value="dsc"
+          name="form.options.playType"
+          :disabled="formMode === 'view'"
+        >
+          降序
+        </el-radio>
+        <el-radio
+          value="random"
+          name="form.options.playType"
+          :disabled="formMode === 'view'"
+        >
+          随机
+        </el-radio>
+      </el-radio-group>
+    </el-form-item>
+    <el-form-item label="播放间隔" prop="form.options.playInterval">
+      <el-input-number
+        v-model="form.options.playInterval"
+        :disabled="formMode === 'view'"
+      />
+      <span class="text-gray-500" style="margin-left: 10px">秒</span>
     </el-form-item>
     <el-form-item label="执行时间">
       <el-col :span="11">

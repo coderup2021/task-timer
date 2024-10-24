@@ -2,7 +2,7 @@ import * as os from 'node:os'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 import moment, { Moment } from 'moment'
-import { uniq } from 'es-toolkit'
+import { randomInt, uniq } from 'es-toolkit'
 import { Injectable } from '@nestjs/common'
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter'
 import { TimerTask } from '../timer-task/timer-task.entity'
@@ -130,17 +130,40 @@ export class TimerCoreService {
   }
 
   genNewPlayIndex(rule: TimerTaskRule) {
-    let playIndex = -1
-    if (
-      rule.playIndex === undefined
-      || rule.playIndex === rule.files.length - 1
-    ) {
-      playIndex = 0
+    if (rule.options.playType === 'asc') {
+      let playIndex = -1
+      if (
+        rule.playIndex === undefined
+        || rule.playIndex === rule.files.length - 1
+      ) {
+        playIndex = 0
+      }
+      else {
+        playIndex = rule.playIndex + 1
+      }
+      return playIndex
     }
-    else {
-      playIndex = rule.playIndex + 1
+    else if (rule.options.playType === 'dsc') {
+      let playIndex = -1
+      if (rule.playIndex === undefined || rule.playIndex === 0) {
+        playIndex = rule.files.length - 1
+      }
+      else {
+        playIndex = rule.playIndex - 1
+      }
+      return playIndex
     }
-    return playIndex
+    else if (rule.options.playType === 'random') {
+      if (rule.files.length === 1) {
+        return 0
+      }
+      const random = randomInt(0, rule.files.length)
+      if (random === rule.playIndex) {
+        return this.genNewPlayIndex(rule)
+      }
+      return random
+    }
+    return 0
   }
 
   genSymlink(filepath: string) {
@@ -219,17 +242,19 @@ export class TimerCoreService {
       this.eventEmitter.emit('timer-task:nextSrc', {
         src: `/${filename}`,
         filepath,
+        delay: rule.options.playInterval || 5000,
       })
     }
     else {
       this.eventEmitter.emit('timer-task:nextSrc', {
         src: ``,
         filepath,
+        delay: rule.options.playInterval || 5000,
       })
     }
   }
 
-  startRuleTimer(rule: TimerTaskRule, delay) {
+  startRuleTimer(rule: TimerTaskRule, delay: number) {
     console.log('🚀 ~ startRuleTimer ~ delay:', delay)
     rule.timer = setTimeout(() => {
       this.runRule(rule)

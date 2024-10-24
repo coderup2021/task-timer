@@ -3,7 +3,7 @@ import path from 'node:path'
 import { Injectable } from '@nestjs/common'
 import fse from 'fs-extra'
 import { TimerCoreService } from '../timer-core/timer-core.service'
-import { TimerTask } from './timer-task.entity'
+import { TimerTask, defaultPlayOption } from './timer-task.entity'
 import { CreateTaskDto, ModifyTaskDto } from './timer-task.dto'
 
 @Injectable()
@@ -54,6 +54,7 @@ export class TimerTaskService {
     task.endAt = dto.endAt
     task.repeat = dto.repeat.map(Number) as WeekDay[]
     task.files = dto.files
+    task.options = dto.options || defaultPlayOption
     task.id = this.genId()
 
     this.tasks.push(task)
@@ -80,6 +81,8 @@ export class TimerTaskService {
       task.repeat = dto.repeat
     if (dto.files)
       task.files = dto.files
+    if (dto.options)
+      task.options = dto.options
 
     this.syncDataToDB()
     return { id: task.id }

@@ -8,6 +8,7 @@ export class CreateTaskDto {
   endAt: string
   repeat: WeekDay[] // 格式 [1,2,3]
   files: string[]
+  options: TimerTask['options']
 }
 
 export class ModifyTaskDto {
@@ -19,4 +20,5 @@ export class ModifyTaskDto {
   endAt: string
   repeat: WeekDay[] // 格式 [1,2,3]
   files: string[]
+  options: TimerTask['options']
 }

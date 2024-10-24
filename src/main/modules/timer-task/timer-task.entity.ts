@@ -7,6 +7,16 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
+interface TimerTaskRuleOptions {
+  playType?: 'asc' | 'dsc' | 'random'
+  playInterval?: number
+}
+
+export const defaultPlayOption: TimerTaskRuleOptions = {
+  playInterval: 5000,
+  playType: 'asc',
+}
+
 @Entity()
 export class TimerTask {
   @PrimaryGeneratedColumn()
@@ -38,9 +48,13 @@ export class TimerTask {
    * 格式 {"playType": "asc"} JSON对象格式
    * 字段说明
    * playType:  "asc" | "dsc" | "random"; //播放顺序, type为PLAY_AUDIO时有效
+   * playInterval: number; // 播放间隔, type为PLAY_AUDIO时有效
    */
-  @Column('string')
-  options: string
+  @Column({
+    type: 'simple-json',
+    default: defaultPlayOption,
+  })
+  options: TimerTaskRuleOptions
 
   @Column('number')
   runCount: number // 运行次数

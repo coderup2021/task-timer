@@ -66,7 +66,9 @@ onAudioPlay((props: IAudioPlayProps) => {
   console.log('audio play event triggered,', props)
   timerTaskStore.fetchRemote()
   currPlayFilename.value = props.src
-  audio.value.src = `http://127.0.0.1:3678${props.src}`
+  setTimeout(() => {
+    audio.value.src = `http://127.0.0.1:3678${props.src}`
+  }, props.delay || 0)
   //   audio.value.play()
 })
 
