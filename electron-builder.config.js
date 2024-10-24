@@ -8,11 +8,8 @@ const config = {
   },
   publish: null,
   npmRebuild: false,
-  files: [
-    'dist/main/**/*',
-    'dist/preload/**/*',
-    'dist/render/**/*',
-  ],
+  files: ['dist/main/**/*', 'dist/preload/**/*', 'dist/render/**/*'],
+  productName: 'IUtil',
 }
 
 module.exports = config

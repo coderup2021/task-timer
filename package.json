@@ -1,8 +1,7 @@
 {
-  "name": "timer-task",
+  "name": "IUtil",
   "version": "1.0.1",
-  "packageManager": "pnpm@9.11.0",
-  "description": "Run tasks at specified times",
+  "description": "my utils collection",
   "main": "dist/main/index.js",
   "scripts": {
     "dev": "rimraf dist && vite",
