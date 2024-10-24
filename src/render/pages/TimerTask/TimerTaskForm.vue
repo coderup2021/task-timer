@@ -46,7 +46,7 @@ const form = reactive<
   type: 'PLAY_AUDIO',
   startAt: new Date(),
   endAt: new Date(),
-  options: '',
+  options: { playType: 'asc', playInterval: 5 },
   repeat: [],
   files: [],
 })
